@@ -1,6 +1,7 @@
 // import modules
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
+var roleUpgrader = require('role.builder');
 
 module.exports.loop = function () {
     var starttime = Date.now();
@@ -23,14 +24,18 @@ module.exports.loop = function () {
             roleHarvester.run(creep);
         }
         // if creep is upgrader, call upgrader script
-        else if (creep.memory.role == 'upgrader') {
+        if (creep.memory.role == 'upgrader') {
             roleUpgrader.run(creep);
+        }
+	if(creep.memory.role == 'builder') {
+            roleBuilder.run(creep);
         }
     }
     //console.log('Orders Given!');
 
     // goal: have 10 harvesters and as many upgraders as possible
     var minimumNumberOfHarvesters = 10;
+	
     // _.sum will count the number of properties in Game.creeps filtered by the
     //  arrow function, which checks for the creep being a harvester
     var numberOfHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
