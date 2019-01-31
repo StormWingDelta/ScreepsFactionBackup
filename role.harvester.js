@@ -1,4 +1,4 @@
-var roleHarvester = {
+var roleHarvester  = {
     // a function to run the logic for this role
     run: function(creep) {
         // if creep is bringing energy to the spawn but has no energy left
@@ -13,13 +13,29 @@ var roleHarvester = {
         }
 
         // if creep is supposed to transfer energy to the spawn
-        if (creep.memory.working == true) {
+        /*if (creep.memory.working == true) {
             // try to transfer energy, if the spawn is not in range
             if (creep.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 // move towards the spawn
                 creep.moveTo(Game.spawns.Spawn1);
             }
+        }*/
+		var targets = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_EXTENSION ||
+					structure.structureType == STRUCTURE_SPAWN ||
+					structure.structureType == STRUCTURE_CONTAINER ||
+					structure.structureType == STRUCTURE_STORAGE ||
+					structure.structureType == STRUCTURE_LINK) &&
+                    structure.energy < structure.energyCapacity;
+            }
+        });
+        if(creep.memory.working == true && targets.length > 0) {
+            if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            }
         }
+		
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
